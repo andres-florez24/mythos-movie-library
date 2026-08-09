@@ -1,0 +1,70 @@
+body {
+   
+    background-image: url('img/fondo_dashboard.png');
+    background-size: cover; 
+    background-position: center; 
+    background-attachment: fixed; 
+    background-repeat: no-repeat;
+    background-color: #f4f4f4; 
+    min-height: 100vh;
+}
+ 
+
+/* =========================================
+   ESTILOS (LOGIN)
+   ========================================= */
+
+
+.login-card {
+    background-color: transparent;
+    padding: 30px; /* Le da espacio para respirar por dentro */
+    border-radius: 10px;
+    min-height: calc(80vh - 20px);
+}
+
+
+/* =========================================
+   ESTILOS PERSONALIZADOS PARA TABS (LOGIN)
+   ========================================= */
+
+/* 1. Quitamos la línea gris que Bootstrap pone por debajo de todas las pestañas */
+.nav-tabs {
+    border-bottom: none; 
+}
+
+/* 2. Estilo para las pestañas normales (inactivas) */
+.nav-tabs .nav-link {
+    color: #333 !important; /* Letra oscura para que se lea sobre el mármol */
+    background-color: transparent !important; /* Sin fondo */
+    border: none !important; /* Sin bordes */
+    font-weight: bold;
+}
+
+/* 3. Estilo para cuando pasas el mouse por encima (Hover) */
+.nav-tabs .nav-link:hover {
+    color: #C4A265 !important; /* Se pone dorada al pasar el mouse */
+    border: none !important;
+}
+
+/* 4. Estilo para la pestaña ACTIVA (la que tiene el cuadro blanco en tu foto) */
+.nav-tabs .nav-link.active {
+    background-color: transparent !important; /* Quita el temido fondo blanco */
+    color: #C4A265 !important; /* Letra dorada */
+    border: none !important; /* Quita el borde tipo "carpeta" */
+    border-bottom: 3px solid #C4A265 !important; /* Agrega una línea dorada elegante abajo */
+}
+
+/* Botón estilo "Ghost" (Transparente con borde) */
+.btn-gold {
+    background-color: transparent; /* Fondo transparente */
+    color: #625e56; /* Texto dorado para que combine con el borde */
+    border: 2px solid #D4B67A; /* Borde dorado sólido de 2 píxeles */
+    font-weight: bold;
+    transition: all 0.3s ease; /* Transición suave para el fondo, texto y borde */
+}
+
+/* Efecto al pasar el mouse (se rellena de dorado) */
+.btn-gold:hover {
+    background-color: #d3c09a; /* Se rellena con el dorado claro */
+    color: #333; /* Texto oscuro para que resalte y se lea perfectamente sobre el fondo dorado */
+}
