@@ -1,6 +1,7 @@
 body {
    
     background-image: url('img/fondo_dashboard.png');
+    
     background-size: cover; 
     background-position: center; 
     background-attachment: fixed; 
@@ -8,6 +9,8 @@ body {
     background-color: #f4f4f4; 
     min-height: 100vh;
 }
+
+
  
 
 /* =========================================
@@ -67,4 +70,22 @@ body {
 .btn-gold:hover {
     background-color: #d3c09a; /* Se rellena con el dorado claro */
     color: #333; /* Texto oscuro para que resalte y se lea perfectamente sobre el fondo dorado */
+}
+
+
+
+/* CLASE ESPECIAL PARA EL FONDO DEL DASHBOARD */
+.bg-dashboard-activo {
+    background-image: url('img/imagen_dashboard.png') !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+
+/* Aseguramos que no haya márgenes blancos por defecto en la página */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
