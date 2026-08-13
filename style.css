@@ -89,3 +89,94 @@ html, body {
     padding: 0;
     width: 100%;
 }
+
+/* =========================================
+   ESTILOS CARDS PELICULAS
+   ========================================= */
+
+.movie-card {
+    background-color: #ffffff;
+    border-radius: 12px; /* Un borde un poco más suave */
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(196, 162, 101, 0.2); /* Borde sutil dorado */
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(196, 162, 101, 0.25); /* Sombra dorada al pasar el mouse */
+}
+
+.movie-image {
+    width: 100%;
+    height: 420px; /* ✨ SOLUCIÓN: Más altura para simular un póster real */
+    object-fit: cover;
+    object-position: top; /* ✨ SOLUCIÓN: Si debe recortar, prioriza la parte de arriba (caras/títulos) */
+    border-bottom: 2px solid #C4A265; /* Línea divisoria elegante */
+}
+
+/* Contenedor de la información */
+.movie-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Ocupa todo el espacio restante para empujar botones abajo */
+}
+
+/* Tipografía de los detalles */
+.movie-title {
+    color: #4a3b32; /* Tono oscuro acorde al diseño */
+    font-weight: bold;
+    font-family: serif; /* Combina con el estilo de Mythos */
+    margin-bottom: 2px;
+}
+
+.movie-genero {
+    font-size: 0.8rem;
+    color: #a38d67;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.movie-meta {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.movie-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+
+.movie-description {
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 20px;
+    
+    /* Configuración para el truncado de líneas */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Soporte actual para la mayoría de navegadores */
+    line-clamp: 3;         /* Estándar oficial para compatibilidad futura */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Botones siempre al fondo de la tarjeta */
+.movie-actions {
+    margin-top: auto; 
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap; /* Si la pantalla es pequeña, se acomodan solos */
+}

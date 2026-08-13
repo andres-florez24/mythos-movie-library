@@ -1,24 +1,21 @@
 //======== VARIABLES GLOBALES =================//
-
 let USUARIOS = {
     admin: "admin123",
     usuario: "1234",
     demo: "demo"
 };
 let usuarioActual = null;
+let peliculasGlobales = [];
 
 //======== INICIALIZACION DE APP=================//
-
 document.addEventListener("DOMContentLoaded", () => {
-    inicializarApp(); // cargar aplicacion
-    eventos(); // cargar eventos
+    inicializarApp(); 
+    eventos(); 
 });
 
 function inicializarApp() {
-    // cargar usuario registrados en locaStorage
     cargarUsuariosRegistrados();
     
-    // verificar si hay usuario logeado
     let userLogged = localStorage.getItem("usuarioLogueado");
     if (userLogged) {
         usuarioActual = JSON.parse(userLogged);
@@ -27,7 +24,6 @@ function inicializarApp() {
 }
 
 function cargarUsuariosRegistrados() {
-    // obtener usuarios de locaStorage y  agregarlos a la variable USUARIOS
     let usuariosRegistrados = JSON.parse(localStorage.getItem("usuariosRegistrados"));
     if (usuariosRegistrados) {
         Object.assign(USUARIOS, usuariosRegistrados);
@@ -35,22 +31,15 @@ function cargarUsuariosRegistrados() {
 }
 
 //===========EVENTOS DEL USUARIO=================//
-
 function eventos() {
-    // Evento para iniciar sesión
     document.querySelector("#formLogin").addEventListener("submit", login);
-    
-    // Evento para el botón de salir del menú
     document.querySelector("#btnSalir").addEventListener("click", logout);
-    
-    // Evento para registrar nuevo usuario
     document.querySelector("#formRegister").addEventListener("submit", register);
 }
 
 //=========== LÓGICA DE AUTENTICACIÓN =================//
-
 function login(e) {
-    e.preventDefault(); // Evita que la página recargue por defecto
+    e.preventDefault(); 
     e.stopPropagation();
 
     let user = document.getElementById("inputUser").value.trim();
@@ -60,7 +49,6 @@ function login(e) {
         usuarioActual = user;
         localStorage.setItem("usuarioLogueado", JSON.stringify(user));
         
-        // Limpiar formulario y mostrar dashboard
         document.querySelector("#formLogin").reset();
         mostrarDashboard();
     } else {
@@ -69,53 +57,42 @@ function login(e) {
 }
 
 function register(e) {
-    e.preventDefault(); // Evitamos que la página se recargue
+    e.preventDefault(); 
 
-    // Obtenemos los valores de los inputs
     let nombre = document.getElementById("inputNombre").value.trim();
     let email = document.getElementById("inputEmail").value.trim();
     let usuario = document.getElementById("inputUseReg").value.trim();
     let password = document.getElementById("inputPasswordReg").value.trim();
     let confirmPassword = document.getElementById("inputConfirmPassword").value.trim();
 
-    // Validaciones
     if (nombre && email && usuario && password && confirmPassword) {
-        
         if (usuario.length < 4) {
             alert("El usuario debe contener mínimo 4 caracteres");
             return;
         }
-        
         if (password.length < 8) {
             alert("La contraseña debe contener mínimo 8 caracteres");
             return;
         }
-
         if (password !== confirmPassword) {
             alert("Las contraseñas no coinciden");
             return;
         }
-
-        // verificar si el usuario existe
         if (USUARIOS[usuario]) {
             alert("El usuario ya está registrado");
             return;
         }
 
-        USUARIOS[usuario] = password; // agregar usuario a la lista 
+        USUARIOS[usuario] = password; 
         
-        // guardar en el localstorage
         let usuariosRegistrados = JSON.parse(localStorage.getItem("usuariosRegistrados")) || {};
         usuariosRegistrados[usuario] = password;
         localStorage.setItem("usuariosRegistrados", JSON.stringify(usuariosRegistrados));
 
-        // exito
         alert("Usuario " + usuario + " registrado con éxito ✔️✔️✔️✔️, inicia sesión");
 
-        // limpiar el formulario de registro y volver a la pestaña de login
         document.querySelector("#formRegister").reset();
         document.querySelector("#login-tab").click();
-        
     } else {
         alert("Por favor completa todos los campos");
     }
@@ -128,57 +105,150 @@ function logout() {
 }
 
 //=========== FUNCIONES DE INTERFAZ (UI) =================//
-
 function mostrarDashboard() {
-    // 1. Ocultar la tarjeta de login
     let loginSection = document.querySelector("#loginSection");
     if (loginSection) loginSection.style.display = "none";
     
-    // 2. Ocultar las pestañas superiores
     let navAuth = document.querySelector("#aut");
     if (navAuth) navAuth.style.display = "none";
     
-    // 3. Mostrar botón Salir 
     let btnSalir = document.querySelector("#btnSalir");
     if (btnSalir) btnSalir.classList.remove("d-none");
 
-    // ✨ 4. MOSTRAR EL BOTÓN AGREGAR PELÍCULA ✨
     let btnAgregar = document.querySelector("#btnAgregarPelicula");
     if (btnAgregar) btnAgregar.classList.remove("d-none");
     
-    // 5. Mostrar el Dashboard
     let dashboard = document.querySelector("#dashboard");
-    if (dashboard) dashboard.classList.remove("d-none");
+    if (dashboard) dashboard.style.display = "block"; // Aseguramos que se muestre
 
-    // Mostrar el nombre del usuario
     let userSpan = document.querySelector(".userLogged");
     if (userSpan) userSpan.textContent = usuarioActual;
 
-    // Cambiar el fondo al mármol limpio
     document.body.classList.add("bg-dashboard-activo");
+    
+    // cargar peliculas al entrar al dashboard
+    cargarPeliculas();
 }
 
 function mostrarLogin() {
-    // 1. Volver a mostrar la tarjeta de login
     let loginSection = document.querySelector("#loginSection");
     if (loginSection) loginSection.style.display = "block"; 
     
-    // 2. Mostrar las pestañas superiores
     let navAuth = document.querySelector("#aut");
     if (navAuth) navAuth.style.display = "flex";
     
-    // 3. Ocultar botón Salir
     let btnSalir = document.querySelector("#btnSalir");
     if (btnSalir) btnSalir.classList.add("d-none");
 
-    // ✨ 4. OCULTAR EL BOTÓN AGREGAR PELÍCULA ✨
     let btnAgregar = document.querySelector("#btnAgregarPelicula");
     if (btnAgregar) btnAgregar.classList.add("d-none");
     
-    // 5. Ocultar el Dashboard
     let dashboard = document.querySelector("#dashboard");
-    if (dashboard) dashboard.classList.add("d-none");
+    if (dashboard) dashboard.style.display = "none"; // Ocultamos el dashboard
 
-    // Quitar el fondo del dashboard para volver al original
     document.body.classList.remove("bg-dashboard-activo");
+}
+
+//============= DATOS DE EJEMPLO ============//
+function cargarDatosEjemplo(){
+    let peliculasEjemplo =[
+        {
+            id:1,
+            titulo: "Inception",
+            genero : "Ciencia Ficcion",
+            director: "Christopher Nolan",
+            ano: 2010,
+            calificacion: 8.8,
+            descripcion: "Inception es una película de ciencia ficción que sigue la historia de un grupo de ladrones que utilizan una máquina que invadi los sueños para conquistar sus objetivos más audaces.",
+            imagen: "https://th.bing.com/th/id/R.4679296126f3f95d38cb7984429ced9d?rik=97VoMD8WjY%2bn2Q&pid=ImgRaw&r=0"
+        },
+        {
+             id: 2,
+            titulo: "Interstellar",
+            genero: "Ciencia Ficcion",
+            director: "Christopher Nolan",
+            ano: 2014,
+            calificacion: 8.7,
+            descripcion: "Narra las aventuras de un grupo de exploradores que hacen uso de un agujero de gusano recientemente descubierto para superar las limitaciones de los viajes espaciales humanos.",
+            imagen: "https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_.jpg"
+        },
+        {
+            id: 3,
+            titulo: "The Matrix",
+            genero: "Ciencia Ficcion",
+            director: "Hermanas Wachowski",
+            ano: 1999,
+            calificacion: 8.7,
+            descripcion: "Un hacker informático aprende de misteriosos rebeldes sobre la verdadera naturaleza de su realidad y su papel en la guerra contra sus controladores.",
+            imagen: "https://m.media-amazon.com/images/M/MV5BN2NmN2VhMTQtMDNiOS00NDlhLTliMjgtODE2ZTY0ODQyNDRhXkEyXkFqcGc@._V1_.jpg"
+        },
+        {
+            id: 4,
+            titulo: "El Padrino",
+            genero: "Accion",
+            director: "Francis Ford Coppola",
+            ano: 1972,
+            calificacion: 9.2,
+            descripcion: "La historia de la familia Corleone bajo el mando de Don Vito Corleone, centrándose en la transformación de su hijo menor, Michael, de un outsider a un líder mafioso.",
+            imagen: "https://m.media-amazon.com/images/M/MV5BZmNiNzM4MTctODI5YS00MzczLWE2MzktNzY4YmNjYjA5YmY1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
+        }
+    ];
+    localStorage.setItem("peliculas",JSON.stringify(peliculasEjemplo));
+}
+
+//============= CARGAR PELICULAS ============//
+function cargarPeliculas() {
+    let peliculas = localStorage.getItem("peliculas");
+    
+    if (!peliculas) {
+        cargarDatosEjemplo();
+        peliculas = localStorage.getItem("peliculas"); 
+    }
+    
+    peliculasGlobales = peliculas ? JSON.parse(peliculas) : [];
+    renderizarGrid(peliculasGlobales);
+}
+
+//============= RENDERIZAR GRID ============//
+function renderizarGrid(pelis) {
+    const gridPeliculas = document.getElementById("gridPeliculas");
+    const sinResultados = document.getElementById("sinResultados");
+
+    gridPeliculas.innerHTML = "";
+
+    if (!pelis || pelis.length === 0) {
+        sinResultados.style.display = "block";
+        return;
+    }
+
+    sinResultados.style.display = "none";
+
+    gridPeliculas.innerHTML = pelis.map(p => `
+        <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="movie-card">
+                <img src="${p.imagen}" class="movie-image" alt="${p.titulo}" onerror="this.src='img/placeholder.png'">
+                <div class="movie-content">
+                    <h5 class="movie-title">${p.titulo}</h5>
+                    <span class="movie-genero">${p.genero}</span>
+                    <div class="movie-meta"><b>${p.ano}</b> - ${p.director}</div>
+                    <div class="movie-rating">
+                        <img src="img/estrella.png" alt="Estrella" style="height: 20px; vertical-align: -3px;">
+                        <span>${p.calificacion}</span> /10
+                    </div>
+                    <div class="movie-description">${p.descripcion}</div>
+                    <div class="movie-actions">
+                        <button class="btn btn-gold btn-sm d-flex align-items-center" onclick="verDetalles(${p.id})">
+                            Ver Detalles
+                        </button>
+                        <button class="btn btn-sm" style="background-color: #f4f4f4; border: 1px solid #c4a265; color: #4a3b32;" onclick="editarPelicula(${p.id})">
+                            Editar
+                        </button>
+                        <button class="btn btn-sm" style="background-color: #fae1dd; border: 1px solid #e29578; color: #7f4f24;" onclick="eliminarPeliculas(${p.id})">
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    `).join('');
 }
