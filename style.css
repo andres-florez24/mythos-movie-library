@@ -1,105 +1,117 @@
-body {
-   
-    background-image: url('img/fondo_dashboard.png');
-    
-    background-size: cover; 
-    background-position: center; 
-    background-attachment: fixed; 
-    background-repeat: no-repeat;
-    background-color: #f4f4f4; 
-    min-height: 100vh;
-}
-
-
- 
-
 /* =========================================
-   ESTILOS (LOGIN)
+   1. ESTILOS GLOBALES Y TIPOGRAFÍA
    ========================================= */
-
-
-.login-card {
-    background-color: transparent;
-    padding: 30px; /* Le da espacio para respirar por dentro */
-    border-radius: 10px;
-    min-height: calc(80vh - 20px);
-}
-
-
-/* =========================================
-   ESTILOS PERSONALIZADOS PARA TABS (LOGIN)
-   ========================================= */
-
-/* 1. Quitamos la línea gris que Bootstrap pone por debajo de todas las pestañas */
-.nav-tabs {
-    border-bottom: none; 
-}
-
-/* 2. Estilo para las pestañas normales (inactivas) */
-.nav-tabs .nav-link {
-    color: #333 !important; /* Letra oscura para que se lea sobre el mármol */
-    background-color: transparent !important; /* Sin fondo */
-    border: none !important; /* Sin bordes */
-    font-weight: bold;
-}
-
-/* 3. Estilo para cuando pasas el mouse por encima (Hover) */
-.nav-tabs .nav-link:hover {
-    color: #C4A265 !important; /* Se pone dorada al pasar el mouse */
-    border: none !important;
-}
-
-/* 4. Estilo para la pestaña ACTIVA (la que tiene el cuadro blanco en tu foto) */
-.nav-tabs .nav-link.active {
-    background-color: transparent !important; /* Quita el temido fondo blanco */
-    color: #C4A265 !important; /* Letra dorada */
-    border: none !important; /* Quita el borde tipo "carpeta" */
-    border-bottom: 3px solid #C4A265 !important; /* Agrega una línea dorada elegante abajo */
-}
-
-/* Botón estilo "Ghost" (Transparente con borde) */
-.btn-gold {
-    background-color: transparent; /* Fondo transparente */
-    color: #625e56; /* Texto dorado para que combine con el borde */
-    border: 2px solid #D4B67A; /* Borde dorado sólido de 2 píxeles */
-    font-weight: bold;
-    transition: all 0.3s ease; /* Transición suave para el fondo, texto y borde */
-}
-
-/* Efecto al pasar el mouse (se rellena de dorado) */
-.btn-gold:hover {
-    background-color: #d3c09a; /* Se rellena con el dorado claro */
-    color: #333; /* Texto oscuro para que resalte y se lea perfectamente sobre el fondo dorado */
-}
-
-
-
-/* CLASE ESPECIAL PARA EL FONDO DEL DASHBOARD */
-.bg-dashboard-activo {
-    background-image: url('img/imagen_dashboard.png') !important;
-    background-size: cover !important;
-    background-position: center center !important;
-    background-attachment: fixed !important;
-    background-repeat: no-repeat !important;
-}
-
-/* Aseguramos que no haya márgenes blancos por defecto en la página */
 html, body {
     margin: 0;
     padding: 0;
     width: 100%;
+    min-height: 100vh;
+    font-family: serif;
+    color: #4a3b32;
+    background-color: #f4f4f4;
+    background-image: url('img/fondo_dashboard.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
 }
 
-/* =========================================
-   ESTILOS CARDS PELICULAS
-   ========================================= */
+/* Tipografía global para títulos */
+h1, h2, h3, h4, h5, h6 {
+    font-family: serif;
+    color: #4a3b32;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
 
+/* Fondo dinámico del dashboard */
+.bg-dashboard-activo {
+    background-image: url('img/imagen_dashboard.png') !important;
+}
+
+
+/* =========================================
+   2. SECCIÓN LOGIN Y TABS
+   ========================================= */
+.login-card {
+    background-color: transparent;
+    padding: 30px;
+    border-radius: 10px;
+    min-height: calc(80vh - 20px);
+}
+
+.nav-tabs {
+    border-bottom: none;
+}
+
+.nav-tabs .nav-link {
+    color: #333 !important;
+    background-color: transparent !important;
+    border: none !important;
+    font-weight: bold;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #C4A265 !important;
+    border: none !important;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: transparent !important;
+    color: #C4A265 !important;
+    border: none !important;
+    border-bottom: 3px solid #C4A265 !important;
+}
+
+/* Estilos de inputs y labels en el Login */
+#formLogin .form-label {
+    color: #2c221b !important;
+    font-weight: bold !important;
+}
+
+#formLogin .form-control {
+    color: #1a1a1a !important;
+    font-weight: 500;
+}
+
+#formLogin .form-control::placeholder {
+    color: #665c54 !important;
+    opacity: 1;
+}
+
+
+/* =========================================
+   3. BOTONES Y COMPONENTES UI
+   ========================================= */
+.btn-gold {
+    background-color: transparent;
+    color: #242018;
+    border: 2px solid #D4B67A;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+    background-color: #d3c09a;
+    color: #262222;
+}
+
+.titulo-dashboard {
+    border-bottom: 2px solid #C4A265;
+    padding-bottom: 8px;
+    display: inline-block;
+}
+
+
+/* =========================================
+   4. TARJETAS DE PELÍCULAS (CARDS)
+   ========================================= */
 .movie-card {
     background-color: #ffffff;
-    border-radius: 12px; /* Un borde un poco más suave */
+    border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(196, 162, 101, 0.2); /* Borde sutil dorado */
+    border: 1px solid rgba(196, 162, 101, 0.2);
     transition: all 0.3s ease;
     height: 100%;
     display: flex;
@@ -108,30 +120,27 @@ html, body {
 
 .movie-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 10px 25px rgba(196, 162, 101, 0.25); /* Sombra dorada al pasar el mouse */
+    box-shadow: 0 10px 25px rgba(196, 162, 101, 0.25);
 }
 
 .movie-image {
     width: 100%;
-    height: 420px; /* ✨ SOLUCIÓN: Más altura para simular un póster real */
+    height: 420px;
     object-fit: cover;
-    object-position: top; /* ✨ SOLUCIÓN: Si debe recortar, prioriza la parte de arriba (caras/títulos) */
-    border-bottom: 2px solid #C4A265; /* Línea divisoria elegante */
+    object-position: top;
+    border-bottom: 2px solid #C4A265;
 }
 
-/* Contenedor de la información */
 .movie-content {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    flex-grow: 1; /* Ocupa todo el espacio restante para empujar botones abajo */
+    flex-grow: 1;
 }
 
-/* Tipografía de los detalles */
 .movie-title {
-    color: #4a3b32; /* Tono oscuro acorde al diseño */
+    color: #4a3b32;
     font-weight: bold;
-    font-family: serif; /* Combina con el estilo de Mythos */
     margin-bottom: 2px;
 }
 
@@ -146,7 +155,7 @@ html, body {
 
 .movie-meta {
     font-size: 0.9rem;
-    color: #666;
+    color: #534242;
     margin-bottom: 5px;
 }
 
@@ -159,24 +168,20 @@ html, body {
     margin-bottom: 10px;
 }
 
-
 .movie-description {
     font-size: 0.85rem;
-    color: #555;
+    color: #342f2f;
     margin-bottom: 20px;
-    
-    /* Configuración para el truncado de líneas */
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Soporte actual para la mayoría de navegadores */
-    line-clamp: 3;         /* Estándar oficial para compatibilidad futura */
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-/* Botones siempre al fondo de la tarjeta */
 .movie-actions {
-    margin-top: auto; 
+    margin-top: auto;
     display: flex;
     gap: 8px;
-    flex-wrap: wrap; /* Si la pantalla es pequeña, se acomodan solos */
+    flex-wrap: wrap;
 }

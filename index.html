@@ -37,22 +37,26 @@
                 </li>
             </ul>
 
-            <!-- Placa con el nombre del usuario logueado (Aparece al entrar) -->
-            <div class="userLogged fw-bold px-4 py-2 ms-3 shadow" style="background: #f4f4f4; border: 2px solid #c4a265; border-radius: 8px; color: #4a3b32; font-family: serif; font-size: 1.2rem; letter-spacing: 1px; display: inline-block;"></div>
+            <!-- Placa transparente del usuario (Debe tener la clase d-none aquí para que no salga en el login) -->
+            <div class="userLogged fw-bold px-4 py-2 ms-3 shadow d-flex align-items-center gap-2 d-none" style="background: transparent; border: 2px solid #c4a265; border-radius: 8px; color: #4a3b32; font-family: serif; font-size: 1.2rem; letter-spacing: 1px;">
+                <img src="img/estrella.png" alt="Estrella" style="height: 22px;">
+                <span class="nombre-usuario"></span>
+            </div>
 
-            <!-- Botón Agregar Película (Conecta con el Modal y se muestra al entrar) -->
+            <!-- Botón Agregar Película -->
             <button id="btnAgregarPelicula" class="btn btn-gold d-none ms-3 d-flex align-items-center" style="padding: 5px 15px;" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 <img src="img/rollo.png" alt="Añadir" style="height: 36px; margin-right: 8px;">
                 Agregar Película
             </button>
 
-            <!-- Botón Salir (Con tu icono circular y se muestra al entrar) -->
+            <!-- Botón Salir -->
             <button id="btnSalir" class="btn btn-gold d-none ms-3 d-flex align-items-center" style="padding: 5px 15px;">
-                <img src="img/iconoSalir.png" alt="Salir" style="height: 38px; width: 38px; object-fit: cover; border-radius: 50%; margin-right: 8px; ">
+                <img src="img/iconoSalir.png" alt="Salir" style="height: 38px; width: 38px; object-fit: cover; border-radius: 50%; margin-right: 8px;">
                 Salir
             </button>
             
         </div>
+        
     </div>
 </nav>
 
@@ -120,8 +124,17 @@
 <!--================== SESION DASHBOARD ===========-->
 <div id="dashboard" style="display: none;">
     <div class="container my-4">
-        <!-- El título ahora vive dentro del dashboard -->
-        <h4 class="mb-3">Todas las películas</h4>
+        
+        <!-- Cabecera del Dashboard: Título a la izquierda y Placa de Usuario a la derecha -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <h4 class="titulo-dashboard d-flex align-items-center m-0">
+                <img src="img/casco.png" alt="icono" style="height: 38px; width: 38px; object-fit: cover; border-radius: 50%; margin-right: 8px;">
+                Todas las películas
+            </h4>
+
+            <!-- Placa con la estrella y el nombre del usuario logueado -->
+            
+        </div>
         
         <div id="gridPeliculas" class="row g-4">
             <!-- Aquí van las películas dinámicamente -->
@@ -133,12 +146,13 @@
         </div>
     </div>
 </div>
+
 <!--================== MODAL AGREGAR PELÍCULA ===========-->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content" style="background-color: #f4f4f4; border: 2px solid #c4a265;">
       <div class="modal-header" style="border-bottom: 1px solid #c4a265;">
-        <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel" style="font-family: serif; color: #4a3b32;  "   > Agregar Nueva Película</h1>
+        <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel" style="font-family: serif; color: #4a3b32;"> Agregar Nueva Película</h1>
          <img src="img/icono jaron.png" alt="Añadir" style="height: 56px; margin-right: 15px;">
                 
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -160,7 +174,6 @@
                 <option value="AVENTURA">AVENTURA</option>
                 <option value="ANIMADO">ANIMADO</option>
                 <option value="COMEDIA">COMEDIA</option>
-                
                </select>
             </div>
             <div class="mb-3">
@@ -169,15 +182,16 @@
             </div>
             <div class="mb-3">
                 <label for="inputAno" class="form-label fw-bold">año</label>
-                <input type="number" class="form-control" id="inputAno"  min="1900" required>
+                <input type="number" class="form-control" id="inputAno" min="1900" required>
             </div>
             <div class="mb-3">
                 <label for="inputCalificacion" class="form-label fw-bold">Calificacion (1-10)</label>
-                <input type="number" class="form-control" id="inputCalificacion"  min="1" max="10 step="0.1" required>
+                <!-- Corrección de comillas en el input de calificación -->
+                <input type="number" class="form-control" id="inputCalificacion" min="1" max="10" step="0.1" required>
             </div>
              <div class="mb-3">
                 <label for="inputDescripcion" class="form-label fw-bold">Descripcion</label>
-                <textarea class="form-control" id="inputDescripcion" rows="3"  required ></textarea>
+                <textarea class="form-control" id="inputDescripcion" rows="3" required></textarea>
             </div>
             <div class="mb-3">
                 <label for="inputImagen" class="form-label fw-bold">URL de Imagen</label>
@@ -187,7 +201,7 @@
       </div>
       <div class="modal-footer" style="border-top: 1px solid #c4a265;">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-gold">Guardar Película</button>
+        <button type="button" class="btn btn-gold" id="btnGuardarPeliculas">Guardar Película</button>
       </div>
     </div>
   </div>

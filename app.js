@@ -6,6 +6,8 @@ let USUARIOS = {
 };
 let usuarioActual = null;
 let peliculasGlobales = [];
+let peliculaEnEndiccion = null;
+
 
 //======== INICIALIZACION DE APP=================//
 document.addEventListener("DOMContentLoaded", () => {
@@ -30,12 +32,18 @@ function cargarUsuariosRegistrados() {
     }
 }
 
-//===========EVENTOS DEL USUARIO=================//
+
+  //===========EVENTOS DEL USUARIO=================//
 function eventos() {
     document.querySelector("#formLogin").addEventListener("submit", login);
     document.querySelector("#btnSalir").addEventListener("click", logout);
     document.querySelector("#formRegister").addEventListener("submit", register);
+    
+    // Evento directo usando tu nuevo ID, igual que los demás
+    document.querySelector("#btnGuardarPeliculas").addEventListener("click", guardarPeliculas);
 }
+
+
 
 //=========== LÓGICA DE AUTENTICACIÓN =================//
 function login(e) {
@@ -121,8 +129,17 @@ function mostrarDashboard() {
     let dashboard = document.querySelector("#dashboard");
     if (dashboard) dashboard.style.display = "block"; // Aseguramos que se muestre
 
-    let userSpan = document.querySelector(".userLogged");
-    if (userSpan) userSpan.textContent = usuarioActual;
+    // ✨ CORRECCIÓN AQUÍ: Apuntamos al span interno para no borrar la estrella ✨
+    let userSpan = document.querySelector(".userLogged .nombre-usuario");
+    if (userSpan) {
+        userSpan.textContent = usuarioActual;
+    }
+
+    // Aseguramos también que se quite la clase d-none del contenedor principal si la tiene
+    let userPlate = document.querySelector(".userLogged");
+    if (userPlate) {
+        userPlate.classList.remove("d-none");
+    }
 
     document.body.classList.add("bg-dashboard-activo");
     
@@ -137,6 +154,12 @@ function mostrarLogin() {
     let navAuth = document.querySelector("#aut");
     if (navAuth) navAuth.style.display = "flex";
     
+    
+    let userPlate = document.querySelector(".userLogged");
+    if (userPlate) {
+        userPlate.classList.add("d-none"); // Oculta el cuadro de inmediato al salir
+    }
+
     let btnSalir = document.querySelector("#btnSalir");
     if (btnSalir) btnSalir.classList.add("d-none");
 
@@ -144,7 +167,7 @@ function mostrarLogin() {
     if (btnAgregar) btnAgregar.classList.add("d-none");
     
     let dashboard = document.querySelector("#dashboard");
-    if (dashboard) dashboard.style.display = "none"; // Ocultamos el dashboard
+    if (dashboard) dashboard.style.display = "none";
 
     document.body.classList.remove("bg-dashboard-activo");
 }
@@ -226,13 +249,13 @@ function renderizarGrid(pelis) {
     gridPeliculas.innerHTML = pelis.map(p => `
         <div class="col-md-6 col-lg-4 col-xl-3">
             <div class="movie-card">
-                <img src="${p.imagen}" class="movie-image" alt="${p.titulo}" onerror="this.src='img/placeholder.png'">
+                <img src="${p.imagen}" class="movie-image" alt="${p.titulo}" onerror="this.src='img/placehoder.png'">
                 <div class="movie-content">
                     <h5 class="movie-title">${p.titulo}</h5>
                     <span class="movie-genero">${p.genero}</span>
                     <div class="movie-meta"><b>${p.ano}</b> - ${p.director}</div>
                     <div class="movie-rating">
-                        <img src="img/estrella.png" alt="Estrella" style="height: 20px; vertical-align: -3px;">
+                        <img src="img/calificacion.png" alt="Estrella" style="height: 60px; vertical-align: -3px;">
                         <span>${p.calificacion}</span> /10
                     </div>
                     <div class="movie-description">${p.descripcion}</div>
@@ -251,4 +274,105 @@ function renderizarGrid(pelis) {
             </div>   
         </div>
     `).join('');
+}
+
+//Agregar o Editar peliculas 
+
+//Agregar o Editar peliculas 
+//Agregar o Editar peliculas 
+function guardarPeliculas(){
+    // Obtener los datos del formulario
+    let titulo = document.querySelector("#inputTitulo").value.trim();
+    let genero = document.querySelector("#inputGenero").value.trim();
+    let director = document.querySelector("#inputDirector").value.trim();
+    let ano = document.querySelector("#inputAno").value.trim();
+    let calificacion = document.querySelector("#inputCalificacion").value.trim();
+    let descripcion = document.querySelector("#inputDescripcion").value.trim();
+    let imagen = document.querySelector("#inputImagen").value.trim();
+
+    // Validar campos vacíos
+    if (!titulo || !genero || !director || !ano || !calificacion || !descripcion || !imagen) {
+        alert("Por favor completa todos los campos para guardar la película.");
+        return;
+    }
+
+    // Validar si estamos editando o agregando una película
+    if (peliculaEnEndiccion) {
+        // --- EDITAR PELÍCULA ---
+        let index = peliculasGlobales.findIndex((p) => p.id === peliculaEnEndiccion.id);
+        
+        if (index !== -1) {
+            peliculasGlobales[index] = {
+                ...peliculasGlobales[index],
+                titulo, genero, director, ano, calificacion, descripcion, imagen
+            };
+            alert("Pelicula actualizada con exito");
+        }
+    } else {
+        // --- AGREGAR PELÍCULA ---
+        let nuevaPelicula = {
+            id: Date.now(),
+            titulo,
+            genero,
+            director,
+            ano,
+            calificacion,
+            descripcion,
+            imagen,
+            fecha: new Date()
+        };
+
+        // Agregar pelicula a la lista 
+        peliculasGlobales.unshift(nuevaPelicula);
+        alert("Pelicula agregada exitosamente");
+    }
+
+    // ==========================================
+    // ACCIONES COMUNES (Guardar, Renderizar y Cerrar)
+    // ==========================================
+    
+    // 1. Guardar la lista actualizada en el localStorage
+    localStorage.setItem("peliculas", JSON.stringify(peliculasGlobales));
+
+    // 2. Refrescar la pantalla para ver los cambios de inmediato
+    renderizarGrid(peliculasGlobales);
+
+    // 3. Limpiar formulario, restaurar el título del modal y cerrarlo
+    document.querySelector("#formAgregarPelicula").reset();
+    document.querySelector("#exampleModalLabel").textContent = "Agregar Nueva Película";
+    
+    let modalElement = document.getElementById('exampleModal');
+    let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+    if (modalInstance) {
+        modalInstance.hide();
+    }
+
+    // 4. Limpiar la variable de edición
+    peliculaEnEndiccion = null; 
+}
+
+function editarPelicula(id){
+    // Encontrar la película para editarla
+    let pelicula = peliculasGlobales.find((p) => p.id === id);
+
+    // Si se encontró llenamos el formulario 
+    if(pelicula){
+        peliculaEnEndiccion = pelicula; // Actualizar la variable global 
+
+        document.querySelector("#inputTitulo").value = pelicula.titulo;
+        document.querySelector("#inputGenero").value = pelicula.genero;
+        document.querySelector("#inputDirector").value = pelicula.director;
+        document.querySelector("#inputAno").value = pelicula.ano;
+        document.querySelector("#inputCalificacion").value = pelicula.calificacion;
+        document.querySelector("#inputDescripcion").value = pelicula.descripcion;
+        document.querySelector("#inputImagen").value = pelicula.imagen;
+
+        // Cambiar título del modal
+        document.querySelector("#exampleModalLabel").textContent = "Editar Película";
+
+        // CORREGIDO: Usar la variable 'modal' en minúscula con .show()
+        let modalElement = document.querySelector("#exampleModal");
+        let modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+        modal.show();
+    }
 }
