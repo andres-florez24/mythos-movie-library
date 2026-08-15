@@ -2,11 +2,13 @@
 let USUARIOS = {
     admin: "admin123",
     usuario: "1234",
-    demo: "demo"
+    demo: "demo",
+    benitoc: "12345678"
 };
 let usuarioActual = null;
 let peliculasGlobales = [];
 let peliculaEnEndiccion = null;
+let intervaloCarrusel = null;
 
 
 //======== INICIALIZACION DE APP=================//
@@ -38,9 +40,12 @@ function eventos() {
     document.querySelector("#formLogin").addEventListener("submit", login);
     document.querySelector("#btnSalir").addEventListener("click", logout);
     document.querySelector("#formRegister").addEventListener("submit", register);
-    
-    // Evento directo usando tu nuevo ID, igual que los demás
     document.querySelector("#btnGuardarPeliculas").addEventListener("click", guardarPeliculas);
+
+    // ✨ NUEVOS EVENTOS PARA LOS FILTROS ✨
+    document.querySelector("#inputBuscar").addEventListener("input", aplicarFiltros);
+    document.querySelector("#selectGeneros").addEventListener("change", aplicarFiltros);
+    document.querySelector("#selectOrden").addEventListener("change", aplicarFiltros);
 }
 
 
@@ -176,17 +181,17 @@ function mostrarLogin() {
 function cargarDatosEjemplo(){
     let peliculasEjemplo =[
         {
-            id:1,
+            id: 1,
             titulo: "Inception",
-            genero : "Ciencia Ficcion",
+            genero: "Ciencia Ficcion",
             director: "Christopher Nolan",
             ano: 2010,
             calificacion: 8.8,
-            descripcion: "Inception es una película de ciencia ficción que sigue la historia de un grupo de ladrones que utilizan una máquina que invadi los sueños para conquistar sus objetivos más audaces.",
+            descripcion: "Inception es una película de ciencia ficción que sigue la historia de un grupo de ladrones que utilizan una máquina que invade los sueños para conquistar sus objetivos más audaces.",
             imagen: "https://th.bing.com/th/id/R.4679296126f3f95d38cb7984429ced9d?rik=97VoMD8WjY%2bn2Q&pid=ImgRaw&r=0"
         },
         {
-             id: 2,
+            id: 2,
             titulo: "Interstellar",
             genero: "Ciencia Ficcion",
             director: "Christopher Nolan",
@@ -214,11 +219,100 @@ function cargarDatosEjemplo(){
             calificacion: 9.2,
             descripcion: "La historia de la familia Corleone bajo el mando de Don Vito Corleone, centrándose en la transformación de su hijo menor, Michael, de un outsider a un líder mafioso.",
             imagen: "https://m.media-amazon.com/images/M/MV5BZmNiNzM4MTctODI5YS00MzczLWE2MzktNzY4YmNjYjA5YmY1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
+        },
+        {
+            id: 5,
+            titulo: "Gladiador",
+            genero: "Accion",
+            director: "Ridley Scott",
+            ano: 2000,
+            calificacion: 8.5,
+            descripcion: "Un general romano traicionado busca venganza contra el corrupto emperador que asesinó a su familia, ascendiendo en las filas de los gladiadores del Coliseo.",
+            imagen: "https://m.media-amazon.com/images/M/MV5BMDliMmNhNDEtODUyOS00MjNlLTk0NGEtMDlhMzRlZDk5YmY1XkEyXkFqcGc@._V1_.jpg"
+        },
+        {
+            id: 6,
+            titulo: "Interestelar y Más Allá",
+            genero: "Aventura",
+            director: "Steven Spielberg",
+            ano: 1993,
+            calificacion: 8.2,
+            descripcion: "Un paleontólogo viaja a una isla remota donde un millonario ha clonado dinosaurios en un parque temático, desatando el caos absoluto.",
+            imagen: "https://m.media-amazon.com/images/M/MV5BMjM2MDgxMDg0Nl5BMl5BanBnXkFtZTgwNTM2OTM5NDE@._V1_.jpg"
+        },
+        {
+            id: 7,
+            titulo: "Pulp Fiction",
+            genero: "Drama",
+            director: "Quentin Tarantino",
+            ano: 1994,
+            calificacion: 8.9,
+            descripcion: "Las vidas de dos matones de mafiosos, un boxeador, la esposa de un gánster y dos bandidos de poca monta se entrelazan en cuatro historias de violencia y redención.",
+            imagen: "https://m.media-amazon.com/images/M/MV5BNGNhMDIzZTUtNTBlZi00MTRlLWFjM2ItYzViMjE3YzI5MjljXkEyXkFqcGc@._V1_.jpg"
+        },
+        {
+            id: 8,
+            titulo: "El Caballero de la Noche",
+            genero: "Accion",
+            director: "Christopher Nolan",
+            ano: 2008,
+            calificacion: 9.0,
+            descripcion: "Cuando la amenaza conocida como el Guajiro o Joker emerge de su pasado desata el caos y la destrucción en Gotham, Batman debe aceptar uno de los mayores retos psicológicos.",
+            imagen: "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg"
+        },
+        {
+            id: 9,
+            titulo: "Forrest Gump",
+            genero: "Drama",
+            director: "Robert Zemeckis",
+            ano: 1994,
+            calificacion: 8.8,
+            descripcion: "Las presidencias de Kennedy y Johnson, los eventos de Vietnam, el Watergate y otros eventos históricos se desarrollan a través de la perspectiva de un hombre de Alabama con un coeficiente intelectual de 75.",
+            imagen: "https://m.media-amazon.com/images/M/MV5BNWIwODRlZTUtY2U3ZS00Yzg1LWJhNzYtMmZiYmEyNmU1NjMzXkEyXkFqcGc@._V1_.jpg"
+        },
+        {
+            id: 10,
+            titulo: "El Señor de los Anillos: El Retorno del Rey",
+            genero: "Aventura",
+            director: "Peter Jackson",
+            ano: 2003,
+            calificacion: 9.0,
+            descripcion: "Gandalf y Aragorn lideran el Mundo de los Hombres contra el ejército de Sauron para desviar su mirada de Frodo y Sam, que se acercan al Monte del Destino con el Anillo Único.",
+            imagen: "https://m.media-amazon.com/images/M/MV5BMTZkMjBjNWMtZGI5OC00MGU0LTk4ZTItODg2NWM3NTVmNWQ4XkEyXkFqcGc@._V1_.jpg"
+        },
+        {
+            id: 11,
+            titulo: "Spider-Man: Un Nuevo Universo",
+            genero: "Animado",
+            director: "Bob Persichetti, Peter Ramsey, Rodney Rothman",
+            ano: 2018,
+            calificacion: 8.4,
+            descripcion: "El adolescente Miles Morales se convierte en el Spider-Man de su universo, y debe unirse a cinco individuos con poderes arácnidos de otras dimensiones para detener una amenaza para todas las realidades.",
+            imagen: "https://m.media-amazon.com/images/M/MV5BMjMwNDkxMTgzOF5BMl5BanBnXkFtZTgwNTkwNTQ3NjM@._V1_.jpg"
+        },
+        {
+            id: 12,
+            titulo: "Volver al Futuro",
+            genero: "Ciencia Ficcion",
+            director: "Robert Zemeckis",
+            ano: 1985,
+            calificacion: 8.5,
+            descripcion: "Marty McFly, un estudiante de secundaria de 17 años, es enviado accidentalmente treinta años al pasado en un DeLorean que viaja en el tiempo, inventado por su gran amigo, el excéntrico científico Doc Brown.",
+            imagen: "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGc@._V1_.jpg"
+        },
+        {
+            id: 13,
+            titulo: "El Resplandor",
+            genero: "Terror",
+            director: "Stanley Kubrick",
+            ano: 1980,
+            calificacion: 8.4,
+            descripcion: "Una familia se dirige a un hotel aislado para pasar el invierno, donde una presencia siniestra influye en el padre para que se vuelva violento, mientras que su hijo vidente tiene horribles presentimientos del pasado y del futuro.",
+            imagen: "https://m.media-amazon.com/images/M/MV5BZWFlYmY2MWEtMjc0MzwtYzZjOC00M2VhLTg2YzctMzVmMzBlYWE3YmEzXkEyXkFqcGc@._V1_.jpg"
         }
     ];
-    localStorage.setItem("peliculas",JSON.stringify(peliculasEjemplo));
+    localStorage.setItem("peliculas", JSON.stringify(peliculasEjemplo));
 }
-
 //============= CARGAR PELICULAS ============//
 function cargarPeliculas() {
     let peliculas = localStorage.getItem("peliculas");
@@ -230,6 +324,7 @@ function cargarPeliculas() {
     
     peliculasGlobales = peliculas ? JSON.parse(peliculas) : [];
     renderizarGrid(peliculasGlobales);
+    renderizarSlider();
 }
 
 //============= RENDERIZAR GRID ============//
@@ -278,10 +373,14 @@ function renderizarGrid(pelis) {
 
 //Agregar o Editar peliculas 
 
-//Agregar o Editar peliculas 
-//Agregar o Editar peliculas 
-function guardarPeliculas(){
-    // Obtener los datos del formulario
+function guardarPeliculas(e) {
+    // Si el evento existe, evitamos que recargue la página por defecto
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // Obtener los datos de los inputs del modal
     let titulo = document.querySelector("#inputTitulo").value.trim();
     let genero = document.querySelector("#inputGenero").value.trim();
     let director = document.querySelector("#inputDirector").value.trim();
@@ -296,20 +395,18 @@ function guardarPeliculas(){
         return;
     }
 
-    // Validar si estamos editando o agregando una película
     if (peliculaEnEndiccion) {
-        // --- EDITAR PELÍCULA ---
+        // --- EDITAR ---
         let index = peliculasGlobales.findIndex((p) => p.id === peliculaEnEndiccion.id);
-        
         if (index !== -1) {
             peliculasGlobales[index] = {
                 ...peliculasGlobales[index],
                 titulo, genero, director, ano, calificacion, descripcion, imagen
             };
-            alert("Pelicula actualizada con exito");
+            alert("Película actualizada con éxito");
         }
     } else {
-        // --- AGREGAR PELÍCULA ---
+        // --- CREAR NUEVA ---
         let nuevaPelicula = {
             id: Date.now(),
             titulo,
@@ -318,26 +415,20 @@ function guardarPeliculas(){
             ano,
             calificacion,
             descripcion,
-            imagen,
-            fecha: new Date()
+            imagen
         };
 
-        // Agregar pelicula a la lista 
         peliculasGlobales.unshift(nuevaPelicula);
-        alert("Pelicula agregada exitosamente");
+        alert("Película agregada exitosamente");
     }
 
-    // ==========================================
-    // ACCIONES COMUNES (Guardar, Renderizar y Cerrar)
-    // ==========================================
-    
-    // 1. Guardar la lista actualizada en el localStorage
+    // 1. Guardar en localStorage
     localStorage.setItem("peliculas", JSON.stringify(peliculasGlobales));
 
-    // 2. Refrescar la pantalla para ver los cambios de inmediato
+    // 2. Volver a pintar el grid
     renderizarGrid(peliculasGlobales);
 
-    // 3. Limpiar formulario, restaurar el título del modal y cerrarlo
+    // 3. Limpiar formulario y cerrar modal
     document.querySelector("#formAgregarPelicula").reset();
     document.querySelector("#exampleModalLabel").textContent = "Agregar Nueva Película";
     
@@ -347,7 +438,6 @@ function guardarPeliculas(){
         modalInstance.hide();
     }
 
-    // 4. Limpiar la variable de edición
     peliculaEnEndiccion = null; 
 }
 
@@ -370,9 +460,157 @@ function editarPelicula(id){
         // Cambiar título del modal
         document.querySelector("#exampleModalLabel").textContent = "Editar Película";
 
-        // CORREGIDO: Usar la variable 'modal' en minúscula con .show()
-        let modalElement = document.querySelector("#exampleModal");
+          let modalElement = document.querySelector("#exampleModal");
         let modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
         modal.show();
     }
+  
+    
+}
+
+// eliminar peliculas
+
+function eliminarPeliculas(id){
+    //confirmar si desea eliminar la pelicula 
+let confirmar = confirm("¿ desear eliminar esta pelicula ?");
+
+    if(confirmar){
+        //buscar o filtar peliculas que no tenga el id
+        peliculasGlobales = peliculasGlobales.filter((p)=>p.id !== id);
+        // guardar las peliculas restantes en locastorage
+        localStorage.setItem("peliculas", JSON.stringify(peliculasGlobales));
+        // actualizar el dashboard
+        cargarPeliculas();
+        //mostrar confirmacion de eliminar 
+        alert("pelicula eliminada con Exito")
+
+    }
+
+}
+
+
+// ver detalle de peliculas 
+function verDetalles(id){
+    // Encontrar la película para mostrar los detalles (usamos singular 'pelicula')
+    let pelicula = peliculasGlobales.find((p) => p.id === id);
+
+    // Si la encontró
+    if(pelicula){
+        document.querySelector("#detallesTitulo").textContent = pelicula.titulo;
+        document.querySelector("#detallesGenero").textContent = pelicula.genero;
+        document.querySelector("#detallesDirecto").textContent = pelicula.director;
+        document.querySelector("#detallesAno").textContent = pelicula.ano;
+        document.querySelector("#detallesCalificacion").textContent = pelicula.calificacion;
+        document.querySelector("#detallesDescripcion").textContent = pelicula.descripcion;
+        
+        // CORREGIDO: Apuntar al ID de la imagen del modal, no a la descripción
+        document.querySelector("#detallesImagen").src = pelicula.imagen;
+
+        // Mostrar el modal de detalles
+        let modalElement = document.querySelector("#ModalDetalles");
+        let modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+        modal.show();
+    } else {
+        alert("No se encontró la película");
+    }
+}
+
+function renderizarSlider(){
+    let carrusel = document.querySelector("#carruselMovies");
+    if (!carrusel) return;
+    
+    carrusel.innerHTML = "";
+    
+    // Muestra las películas en el carrusel
+    peliculasGlobales.forEach((p) => {
+        let card = document.createElement("div");
+        card.className = "slider-movie-card";
+        card.innerHTML = `
+            <img src="${p.imagen}" onerror="this.src='img/placehoder.png'" alt="${p.titulo}">
+            <div class="slider-movie-info">
+                <h6>${p.titulo}</h6>
+                <small class="text-muted">${p.ano}</small>
+            </div>
+        `;
+        card.addEventListener("click", () => verDetalles(p.id));
+        carrusel.appendChild(card); 
+    });
+
+    // ✨ ¡AQUÍ ESTÁ LA MAGIA! Iniciamos el movimiento automático ✨
+    iniciarCarruselAutomatico();
+}
+
+function scrollSlide(direccion){
+    let slider = document.querySelector("#carruselMovies");
+    let scroll = 220;
+    if (slider) {
+        slider.scrollBy({
+            left: direccion * scroll,
+            behavior: "smooth"
+        });
+    }
+}
+
+// Función para mover el carrusel automáticamente
+function iniciarCarruselAutomatico() {
+    let slider = document.querySelector("#carruselMovies");
+    if (!slider) return;
+
+    // 1. Limpiamos cualquier temporizador previo
+    clearInterval(intervaloCarrusel);
+
+    // 2. Programamos que se mueva cada 3 segundos (3000 milisegundos)
+    intervaloCarrusel = setInterval(() => {
+        // Comprobamos si el carrusel ya llegó al límite derecho
+        if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 5) {
+            // Si llegó al final, lo devolvemos al inicio suavemente
+            slider.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+            // Si no ha llegado al final, que avance 220px (una tarjeta)
+            slider.scrollBy({ left: 220, behavior: "smooth" });
+        }
+    }, 3000); // Puedes cambiar el 3000 si lo quieres más rápido o más lento
+}
+
+//============= LÓGICA DE FILTROS ============//
+function aplicarFiltros() {
+    // 1. Obtener los valores actuales de los 3 inputs
+    let textoBusqueda = document.querySelector("#inputBuscar").value.toLowerCase().trim();
+    let generoSeleccionado = document.querySelector("#selectGeneros").value.toLowerCase();
+    let ordenSeleccionado = document.querySelector("#selectOrden").value;
+
+    // 2. Empezamos con todas las películas
+    let peliculasFiltradas = [...peliculasGlobales];
+
+    // 3. Filtramos por Texto (Busca en Título o en Director)
+    if (textoBusqueda !== "") {
+        peliculasFiltradas = peliculasFiltradas.filter((p) => 
+            p.titulo.toLowerCase().includes(textoBusqueda) || 
+            p.director.toLowerCase().includes(textoBusqueda)
+        );
+    }
+
+    // 4. Filtramos por Género
+    if (generoSeleccionado !== "") {
+        // Le quitamos las tildes por si acaso (ej. Acción vs Accion)
+        peliculasFiltradas = peliculasFiltradas.filter((p) => 
+            p.genero.toLowerCase().includes(generoSeleccionado)
+        );
+    }
+
+    // 5. Aplicamos el Orden o el Top 5 según la Calificación
+    if (ordenSeleccionado === "mayorCalificacion") {
+        peliculasFiltradas.sort((a, b) => parseFloat(b.calificacion) - parseFloat(a.calificacion));
+    } 
+    else if (ordenSeleccionado === "menorCalificacion") {
+        peliculasFiltradas.sort((a, b) => parseFloat(a.calificacion) - parseFloat(b.calificacion));
+    } 
+    else if (ordenSeleccionado === "top5") {
+        // Ordena de mayor a menor y luego corta solo los primeros 5
+        peliculasFiltradas.sort((a, b) => parseFloat(b.calificacion) - parseFloat(a.calificacion));
+        peliculasFiltradas = peliculasFiltradas.slice(0, 5);
+    }
+
+    // 6. Volvemos a pintar el Grid con los resultados listos
+    renderizarGrid(peliculasFiltradas);
 }
