@@ -10,7 +10,6 @@ let peliculasGlobales = [];
 let peliculaEnEndiccion = null;
 let intervaloCarrusel = null;
 
-
 //======== INICIALIZACION DE APP=================//
 document.addEventListener("DOMContentLoaded", () => {
     inicializarApp(); 
@@ -34,8 +33,7 @@ function cargarUsuariosRegistrados() {
     }
 }
 
-
-  //===========EVENTOS DEL USUARIO=================//
+//===========EVENTOS DEL USUARIO=================//
 function eventos() {
     document.querySelector("#formLogin").addEventListener("submit", login);
     document.querySelector("#btnSalir").addEventListener("click", logout);
@@ -47,8 +45,6 @@ function eventos() {
     document.querySelector("#selectGeneros").addEventListener("change", aplicarFiltros);
     document.querySelector("#selectOrden").addEventListener("change", aplicarFiltros);
 }
-
-
 
 //=========== LÓGICA DE AUTENTICACIÓN =================//
 function login(e) {
@@ -132,15 +128,13 @@ function mostrarDashboard() {
     if (btnAgregar) btnAgregar.classList.remove("d-none");
     
     let dashboard = document.querySelector("#dashboard");
-    if (dashboard) dashboard.style.display = "block"; // Aseguramos que se muestre
+    if (dashboard) dashboard.style.display = "block";
 
-    // ✨ CORRECCIÓN AQUÍ: Apuntamos al span interno para no borrar la estrella ✨
     let userSpan = document.querySelector(".userLogged .nombre-usuario");
     if (userSpan) {
         userSpan.textContent = usuarioActual;
     }
 
-    // Aseguramos también que se quite la clase d-none del contenedor principal si la tiene
     let userPlate = document.querySelector(".userLogged");
     if (userPlate) {
         userPlate.classList.remove("d-none");
@@ -148,7 +142,6 @@ function mostrarDashboard() {
 
     document.body.classList.add("bg-dashboard-activo");
     
-    // cargar peliculas al entrar al dashboard
     cargarPeliculas();
 }
 
@@ -159,10 +152,9 @@ function mostrarLogin() {
     let navAuth = document.querySelector("#aut");
     if (navAuth) navAuth.style.display = "flex";
     
-    
     let userPlate = document.querySelector(".userLogged");
     if (userPlate) {
-        userPlate.classList.add("d-none"); // Oculta el cuadro de inmediato al salir
+        userPlate.classList.add("d-none"); 
     }
 
     let btnSalir = document.querySelector("#btnSalir");
@@ -313,6 +305,7 @@ function cargarDatosEjemplo(){
     ];
     localStorage.setItem("peliculas", JSON.stringify(peliculasEjemplo));
 }
+
 //============= CARGAR PELICULAS ============//
 function cargarPeliculas() {
     let peliculas = localStorage.getItem("peliculas");
@@ -372,15 +365,12 @@ function renderizarGrid(pelis) {
 }
 
 //Agregar o Editar peliculas 
-
 function guardarPeliculas(e) {
-    // Si el evento existe, evitamos que recargue la página por defecto
     if (e) {
         e.preventDefault();
         e.stopPropagation();
     }
 
-    // Obtener los datos de los inputs del modal
     let titulo = document.querySelector("#inputTitulo").value.trim();
     let genero = document.querySelector("#inputGenero").value.trim();
     let director = document.querySelector("#inputDirector").value.trim();
@@ -389,14 +379,12 @@ function guardarPeliculas(e) {
     let descripcion = document.querySelector("#inputDescripcion").value.trim();
     let imagen = document.querySelector("#inputImagen").value.trim();
 
-    // Validar campos vacíos
     if (!titulo || !genero || !director || !ano || !calificacion || !descripcion || !imagen) {
         alert("Por favor completa todos los campos para guardar la película.");
         return;
     }
 
     if (peliculaEnEndiccion) {
-        // --- EDITAR ---
         let index = peliculasGlobales.findIndex((p) => p.id === peliculaEnEndiccion.id);
         if (index !== -1) {
             peliculasGlobales[index] = {
@@ -406,7 +394,6 @@ function guardarPeliculas(e) {
             alert("Película actualizada con éxito");
         }
     } else {
-        // --- CREAR NUEVA ---
         let nuevaPelicula = {
             id: Date.now(),
             titulo,
@@ -422,13 +409,10 @@ function guardarPeliculas(e) {
         alert("Película agregada exitosamente");
     }
 
-    // 1. Guardar en localStorage
     localStorage.setItem("peliculas", JSON.stringify(peliculasGlobales));
-
-    // 2. Volver a pintar el grid
     renderizarGrid(peliculasGlobales);
+    renderizarSlider();
 
-    // 3. Limpiar formulario y cerrar modal
     document.querySelector("#formAgregarPelicula").reset();
     document.querySelector("#exampleModalLabel").textContent = "Agregar Nueva Película";
     
@@ -442,12 +426,10 @@ function guardarPeliculas(e) {
 }
 
 function editarPelicula(id){
-    // Encontrar la película para editarla
     let pelicula = peliculasGlobales.find((p) => p.id === id);
 
-    // Si se encontró llenamos el formulario 
     if(pelicula){
-        peliculaEnEndiccion = pelicula; // Actualizar la variable global 
+        peliculaEnEndiccion = pelicula; 
 
         document.querySelector("#inputTitulo").value = pelicula.titulo;
         document.querySelector("#inputGenero").value = pelicula.genero;
@@ -457,44 +439,30 @@ function editarPelicula(id){
         document.querySelector("#inputDescripcion").value = pelicula.descripcion;
         document.querySelector("#inputImagen").value = pelicula.imagen;
 
-        // Cambiar título del modal
         document.querySelector("#exampleModalLabel").textContent = "Editar Película";
 
-          let modalElement = document.querySelector("#exampleModal");
+        let modalElement = document.querySelector("#exampleModal");
         let modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
         modal.show();
     }
-  
-    
 }
 
 // eliminar peliculas
-
 function eliminarPeliculas(id){
-    //confirmar si desea eliminar la pelicula 
-let confirmar = confirm("¿ desear eliminar esta pelicula ?");
+    let confirmar = confirm("¿Deseas eliminar esta película?");
 
     if(confirmar){
-        //buscar o filtar peliculas que no tenga el id
         peliculasGlobales = peliculasGlobales.filter((p)=>p.id !== id);
-        // guardar las peliculas restantes en locastorage
         localStorage.setItem("peliculas", JSON.stringify(peliculasGlobales));
-        // actualizar el dashboard
         cargarPeliculas();
-        //mostrar confirmacion de eliminar 
-        alert("pelicula eliminada con Exito")
-
+        alert("Película eliminada con éxito");
     }
-
 }
-
 
 // ver detalle de peliculas 
 function verDetalles(id){
-    // Encontrar la película para mostrar los detalles (usamos singular 'pelicula')
     let pelicula = peliculasGlobales.find((p) => p.id === id);
 
-    // Si la encontró
     if(pelicula){
         document.querySelector("#detallesTitulo").textContent = pelicula.titulo;
         document.querySelector("#detallesGenero").textContent = pelicula.genero;
@@ -503,10 +471,8 @@ function verDetalles(id){
         document.querySelector("#detallesCalificacion").textContent = pelicula.calificacion;
         document.querySelector("#detallesDescripcion").textContent = pelicula.descripcion;
         
-        // CORREGIDO: Apuntar al ID de la imagen del modal, no a la descripción
         document.querySelector("#detallesImagen").src = pelicula.imagen;
 
-        // Mostrar el modal de detalles
         let modalElement = document.querySelector("#ModalDetalles");
         let modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
         modal.show();
@@ -521,7 +487,6 @@ function renderizarSlider(){
     
     carrusel.innerHTML = "";
     
-    // Muestra las películas en el carrusel
     peliculasGlobales.forEach((p) => {
         let card = document.createElement("div");
         card.className = "slider-movie-card";
@@ -536,7 +501,6 @@ function renderizarSlider(){
         carrusel.appendChild(card); 
     });
 
-    // ✨ ¡AQUÍ ESTÁ LA MAGIA! Iniciamos el movimiento automático ✨
     iniciarCarruselAutomatico();
 }
 
@@ -556,33 +520,25 @@ function iniciarCarruselAutomatico() {
     let slider = document.querySelector("#carruselMovies");
     if (!slider) return;
 
-    // 1. Limpiamos cualquier temporizador previo
     clearInterval(intervaloCarrusel);
 
-    // 2. Programamos que se mueva cada 3 segundos (3000 milisegundos)
     intervaloCarrusel = setInterval(() => {
-        // Comprobamos si el carrusel ya llegó al límite derecho
         if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 5) {
-            // Si llegó al final, lo devolvemos al inicio suavemente
             slider.scrollTo({ left: 0, behavior: "smooth" });
         } else {
-            // Si no ha llegado al final, que avance 220px (una tarjeta)
             slider.scrollBy({ left: 220, behavior: "smooth" });
         }
-    }, 3000); // Puedes cambiar el 3000 si lo quieres más rápido o más lento
+    }, 3000); 
 }
 
 //============= LÓGICA DE FILTROS ============//
 function aplicarFiltros() {
-    // 1. Obtener los valores actuales de los 3 inputs
     let textoBusqueda = document.querySelector("#inputBuscar").value.toLowerCase().trim();
     let generoSeleccionado = document.querySelector("#selectGeneros").value.toLowerCase();
     let ordenSeleccionado = document.querySelector("#selectOrden").value;
 
-    // 2. Empezamos con todas las películas
     let peliculasFiltradas = [...peliculasGlobales];
 
-    // 3. Filtramos por Texto (Busca en Título o en Director)
     if (textoBusqueda !== "") {
         peliculasFiltradas = peliculasFiltradas.filter((p) => 
             p.titulo.toLowerCase().includes(textoBusqueda) || 
@@ -590,15 +546,12 @@ function aplicarFiltros() {
         );
     }
 
-    // 4. Filtramos por Género
     if (generoSeleccionado !== "") {
-        // Le quitamos las tildes por si acaso (ej. Acción vs Accion)
         peliculasFiltradas = peliculasFiltradas.filter((p) => 
             p.genero.toLowerCase().includes(generoSeleccionado)
         );
     }
 
-    // 5. Aplicamos el Orden o el Top 5 según la Calificación
     if (ordenSeleccionado === "mayorCalificacion") {
         peliculasFiltradas.sort((a, b) => parseFloat(b.calificacion) - parseFloat(a.calificacion));
     } 
@@ -606,11 +559,9 @@ function aplicarFiltros() {
         peliculasFiltradas.sort((a, b) => parseFloat(a.calificacion) - parseFloat(b.calificacion));
     } 
     else if (ordenSeleccionado === "top5") {
-        // Ordena de mayor a menor y luego corta solo los primeros 5
         peliculasFiltradas.sort((a, b) => parseFloat(b.calificacion) - parseFloat(a.calificacion));
         peliculasFiltradas = peliculasFiltradas.slice(0, 5);
     }
 
-    // 6. Volvemos a pintar el Grid con los resultados listos
     renderizarGrid(peliculasFiltradas);
 }
